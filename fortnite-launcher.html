@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortnite Launcher Maker - Farming Boys</title>
+    <link rel="icon" type="image/png" href="Farming Boys - Community.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <style>
+        .banner {
+            width: 100%;
+            height: auto;
+            margin: 0;
+        }
+        .header-bar {
+            background-color: #A0C213;
+            color: black;
+            padding: 60px 10%;
+            text-align: center;
+            position: relative;
+        }
+        .header-bar h1 {
+            font-size: 4rem;
+        }
+        .header-bar p {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .buttons-container {
+            margin-top: 20px;
+        }
+        .header-bar .button {
+            margin: 10px;
+        }
+        .login-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: white;
+            color: black;
+            border: 1px solid black;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .section {
+            padding: 30px 10%;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f4f4f4;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .popup-header h2 {
+            margin: 0;
+        }
+        .popup-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .checkbox-group label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .hint {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 6px;
+        }
+        .preview-box {
+            background-color: #111;
+            color: #7CFC00;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            white-space: pre;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Groene balk bovenaan -->
+    <section class="header-bar">
+        <h1 class="title is-1">Fortnite Launcher Maker</h1>
+        <p class="subtitle">Build your own custom Fortnite launcher</p>
+
+        <!-- Login knop -->
+        <button class="login-button" id="loginButton">Login</button>
+
+        <!-- Navigatieknoppen -->
+        <div class="buttons-container">
+            <a href="index.html" class="button is-light">Home</a>
+            <a href="farming-simulator.html" class="button is-light">Farming Simulator</a>
+            <a href="minecraft.html" class="button is-light">Minecraft</a>
+            <a href="euro-truck-simulator.html" class="button is-light">Euro Truck Simulator</a>
+            <a href="fortnite-launcher.html" class="button is-light">Fortnite Launcher</a>
+        </div>
+    </section>
+
+    <!-- Bouw je launcher -->
+    <section class="section">
+        <h2 class="title is-2">1. Configure your launcher</h2>
+
+        <div class="field">
+            <label class="label" for="launcherName">Launcher name</label>
+            <div class="control">
+                <input class="input" type="text" id="launcherName" value="My Fortnite Launcher">
+            </div>
+            <p class="hint">Shown in the window title.</p>
+        </div>
+
+        <div class="field">
+            <label class="label" for="launchMode">How should it start Fortnite?</label>
+            <div class="control">
+                <div class="select is-fullwidth">
+                    <select id="launchMode">
+                        <option value="epic-uri">Epic Games Launcher link (recommended)</option>
+                        <option value="epic-exe">Open Epic Games Launcher (.exe)</option>
+                        <option value="direct-exe">Start Fortnite directly (.exe)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="field" id="pathField">
+            <label class="label" for="launcherPath">Program path</label>
+            <div class="control">
+                <input class="input" type="text" id="launcherPath"
+                    data-epic-path="C:\Program Files (x86)\Epic Games\Launcher\Portal\Binaries\Win32\EpicGamesLauncher.exe"
+                    data-fortnite-path="C:\Program Files\Epic Games\Fortnite\FortniteGame\Binaries\Win64\FortniteClient-Win64-Shipping.exe">
+            </div>
+            <p class="hint">Full path to the .exe on your PC. Change it if you installed the game somewhere else.</p>
+        </div>
+
+        <div class="field" id="optionsField">
+            <label class="label">Game options</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" data-flag="windowed"> Windowed mode</label>
+                <label><input type="checkbox" data-flag="fullscreen"> Fullscreen mode</label>
+                <label><input type="checkbox" data-flag="nosplash"> Skip splash screen</label>
+                <label><input type="checkbox" data-flag="nomovie"> Skip intro videos</label>
+                <label><input type="checkbox" id="resEnabled"> Custom resolution</label>
+            </div>
+            <div class="columns is-mobile" id="resRow" style="display: none; margin-top: 10px;">
+                <div class="column">
+                    <input class="input" type="number" id="resX" value="1920" placeholder="Width">
+                </div>
+                <div class="column is-narrow is-flex is-align-items-center">
+                    <span>&times;</span>
+                </div>
+                <div class="column">
+                    <input class="input" type="number" id="resY" value="1080" placeholder="Height">
+                </div>
+            </div>
+        </div>
+
+        <div class="columns is-multiline">
+            <div class="column is-half">
+                <div class="field">
+                    <label class="label" for="consoleColor">Console colors</label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select id="consoleColor">
+                                <option value="0A">Green on black</option>
+                                <option value="07">White on black</option>
+                                <option value="0B">Cyan on black</option>
+                                <option value="0E">Yellow on black</option>
+                                <option value="0C">Red on black</option>
+                                <option value="0F">White on black (bright)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column is-half">
+                <div class="field">
+                    <label class="label" for="launchMessage">Message before launch</label>
+                    <div class="control">
+                        <input class="input" type="text" id="launchMessage" value="Starting Fortnite, please wait...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="checkbox">
+                <input type="checkbox" id="pauseCheck" checked>
+                Keep the window open until a key is pressed
+            </label>
+        </div>
+    </section>
+
+    <!-- Voorbeeld en download -->
+    <section class="section">
+        <h2 class="title is-2">2. Your launcher file</h2>
+        <p>This is the exact content of your <code>.bat</code> file:</p>
+        <pre class="preview-box" id="batPreview"></pre>
+
+        <div class="buttons" style="margin-top: 20px;">
+            <button class="button is-success" id="downloadButton">Download launcher</button>
+            <button class="button is-light" id="copyButton">Copy to clipboard</button>
+        </div>
+        <p class="hint" id="statusText"></p>
+    </section>
+
+    <!-- Uitleg -->
+    <section class="section">
+        <h2 class="title is-2">How to use it</h2>
+        <ol>
+            <li>Click <strong>Download launcher</strong> and save the <code>.bat</code> file (your Desktop is fine).</li>
+            <li>Double-click the file to start Fortnite.</li>
+            <li>You can rename the file, move it anywhere, and edit it in Notepad.</li>
+        </ol>
+        <p class="hint">
+            The Epic Games Launcher must be installed and your Epic account must own Fortnite.
+            If Windows shows a warning because the file was downloaded, right-click the file &rarr;
+            Properties &rarr; tick <strong>Unblock</strong>.
+        </p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><a href="https://discord.gg/jFYUVhVHEY" target="_blank">Join onze Discord server!</a></p>
+        <p>© 2025 Farming Boys. Alle rechten voorbehouden.</p>
+    </footer>
+
+    <!-- Pop-up voor uitloggen -->
+    <div id="logoutPopup" class="popup">
+        <div class="popup-header">
+            <h2>Do you want to log out?</h2>
+            <button id="closePopup" aria-label="Close">×</button>
+        </div>
+        <div class="popup-buttons">
+            <button id="logoutYes" class="button is-success">Yes, log out</button>
+            <button id="logoutNo" class="button is-danger">No, stay logged in</button>
+        </div>
+    </div>
+
+    <script>
+        // Loginfunctionaliteit
+        const loginButton = document.getElementById('loginButton');
+        const logoutPopup = document.getElementById('logoutPopup');
+        const closePopup = document.getElementById('closePopup');
+        const logoutYes = document.getElementById('logoutYes');
+        const logoutNo = document.getElementById('logoutNo');
+
+        const isLoggedIn = sessionStorage.getItem('loggedIn');
+
+        if (isLoggedIn === 'true') {
+            loginButton.textContent = 'Logged in';
+        }
+
+        loginButton.addEventListener('click', () => {
+            if (isLoggedIn === 'true') {
+                logoutPopup.style.display = 'block';
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        closePopup.addEventListener('click', () => {
+            logoutPopup.style.display = 'none';
+        });
+
+        logoutNo.addEventListener('click', () => {
+            logoutPopup.style.display = 'none';
+        });
+
+        logoutYes.addEventListener('click', () => {
+            sessionStorage.removeItem('loggedIn');
+            logoutPopup.style.display = 'none';
+            loginButton.textContent = 'Login';
+        });
+
+        // Launcher maker
+        const nameInput = document.getElementById('launcherName');
+        const modeSelect = document.getElementById('launchMode');
+        const pathField = document.getElementById('pathField');
+        const pathInput = document.getElementById('launcherPath');
+        const optionsField = document.getElementById('optionsField');
+        const resEnabled = document.getElementById('resEnabled');
+        const resRow = document.getElementById('resRow');
+        const resX = document.getElementById('resX');
+        const resY = document.getElementById('resY');
+        const colorSelect = document.getElementById('consoleColor');
+        const messageInput = document.getElementById('launchMessage');
+        const pauseCheck = document.getElementById('pauseCheck');
+        const preview = document.getElementById('batPreview');
+        const statusText = document.getElementById('statusText');
+        const flagBoxes = document.querySelectorAll('input[data-flag]');
+
+        // Epic Games Launcher link voor Fortnite
+        const EPIC_LINK = 'com.epicgames.launcher://apps/fn%3A4fe75bbc5a674f4f9b356b5c90567da5%3AFortnite?action=launch&silent=true';
+
+        function hasFlag(name) {
+            const box = document.querySelector('input[data-flag="' + name + '"]');
+            return box && box.checked;
+        }
+
+        function buildLauncher() {
+            const name = nameInput.value.trim() || 'Fortnite Launcher';
+            const mode = modeSelect.value;
+            const lines = [];
+
+            lines.push('@echo off');
+            lines.push('title ' + name);
+            lines.push('color ' + colorSelect.value);
+            lines.push('cls');
+            lines.push('echo ==========================================');
+            lines.push('echo   ' + name);
+            lines.push('echo ==========================================');
+            lines.push('echo.');
+
+            if (messageInput.value.trim()) {
+                lines.push('echo ' + messageInput.value.trim());
+                lines.push('echo.');
+            }
+
+            if (mode === 'epic-uri') {
+                lines.push('start "" "' + EPIC_LINK + '"');
+            } else {
+                const args = [];
+                if (mode === 'direct-exe') {
+                    if (hasFlag('windowed')) args.push('-windowed');
+                    if (hasFlag('fullscreen')) args.push('-fullscreen');
+                    if (hasFlag('nosplash')) args.push('-nosplash');
+                    if (hasFlag('nomovie')) args.push('-nomovie');
+                    if (resEnabled.checked) {
+                        args.push('-ResX=' + (resX.value || '1920'));
+                        args.push('-ResY=' + (resY.value || '1080'));
+                    }
+                }
+                lines.push('start "" "' + pathInput.value.trim() + '"' + (args.length ? ' ' + args.join(' ') : ''));
+            }
+
+            lines.push('echo.');
+            lines.push('echo Fortnite is starting. Have fun!');
+            if (pauseCheck.checked) {
+                lines.push('pause');
+            }
+
+            return lines.join('\r\n') + '\r\n';
+        }
+
+        function refreshPreview() {
+            preview.textContent = buildLauncher();
+        }
+
+        function updateFields() {
+            const mode = modeSelect.value;
+
+            pathField.style.display = mode === 'epic-uri' ? 'none' : 'block';
+            optionsField.style.display = mode === 'direct-exe' ? 'block' : 'none';
+
+            if (mode === 'epic-exe') {
+                pathInput.value = pathInput.dataset.epicPath;
+            } else if (mode === 'direct-exe') {
+                pathInput.value = pathInput.dataset.fortnitePath;
+            }
+
+            resRow.style.display = resEnabled.checked ? 'flex' : 'none';
+            refreshPreview();
+        }
+
+        function downloadLauncher() {
+            const fileName = (nameInput.value.trim() || 'Fortnite Launcher').replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') + '.bat';
+            const blob = new Blob([buildLauncher()], { type: 'application/octet-stream' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+            statusText.textContent = 'Downloaded ' + fileName;
+        }
+
+        document.getElementById('downloadButton').addEventListener('click', downloadLauncher);
+
+        document.getElementById('copyButton').addEventListener('click', () => {
+            navigator.clipboard.writeText(buildLauncher()).then(() => {
+                statusText.textContent = 'Copied to clipboard.';
+            });
+        });
+
+        [nameInput, pathInput, resX, resY, messageInput].forEach(input => input.addEventListener('input', refreshPreview));
+        [modeSelect, colorSelect, resEnabled, pauseCheck].forEach(input => input.addEventListener('change', updateFields));
+        flagBoxes.forEach(box => box.addEventListener('change', refreshPreview));
+
+        updateFields();
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+services:
+  web:
+    # Plain runtime image; the cloned static site is bind-mounted below, so edits
+    # are served immediately with no build step.
+    image: python:3.12-alpine
+    working_dir: /site
+    command: ["python", "-m", "http.server", "3000", "--bind", "0.0.0.0", "--directory", "/site"]
+    ports:
+      # Host port 3000 is the preview entry point
+      - "3000:3000"
+    volumes:
+      - ./:/site:ro
+    restart: on-failure
+    healthcheck:
+      # 127.0.0.1 on purpose: inside the container "localhost" resolves to ::1,
+      # where the IPv4-only static server is not listening.
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:3000/ || { echo 'web not serving'; exit 1; }"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
